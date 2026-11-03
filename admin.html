@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin - MSS Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      dialog {
+        background: transparent;
+      }
+      dialog::backdrop {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(4px);
+      }
+      .pagination button {
+        padding: 0.5rem 0.875rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        transition: all 0.2s;
+        color: #cbd5e1;
+      }
+      .pagination button:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .pagination button.active {
+        background: #eab308;
+        color: #0f172a;
+        border-color: #eab308;
+        font-weight: 600;
+      }
+      .pagination .dots {
+        padding: 0 0.5rem;
+        color: #cbd5e1;
+      }
+      .input-field {
+        width: 100%;
+        background: rgba(30, 41, 59, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 0.625rem 1rem;
+        color: #f1f5f9;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .input-field:focus {
+        border-color: #eab308;
+      }
+      .label-field {
+        display: block;
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-bottom: 0.375rem;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body class="bg-[#0f172a] text-slate-300 font-sans antialiased">
+    <!-- LOGIN -->
+    <section
+      id="loginView"
+      class="min-h-screen flex items-center justify-center p-6 hidden"
+    >
+      <div
+        class="glass p-8 md:p-10 rounded-2xl w-full max-w-md shadow-2xl relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-yellow-600"
+        ></div>
+        <h1 class="text-2xl font-bold text-white mb-2">Login Admin MSS</h1>
+        <p class="text-sm text-slate-400 mb-8">
+          Masuk untuk mengelola data jaringan.
+        </p>
+
+        <form id="loginForm">
+          <label for="email" class="label-field mt-0">Email</label>
+          <input
+            id="email"
+            type="email"
+            required
+            autocomplete="username"
+            class="input-field"
+          />
+
+          <label for="password" class="label-field">Password</label>
+          <input
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            class="input-field"
+          />
+
+          <div
+            class="text-red-400 text-sm mt-3 min-h-[20px]"
+            id="loginError"
+          ></div>
+
+          <button
+            class="w-full mt-6 py-3 rounded-lg bg-yellow-500 text-slate-900 font-bold hover:bg-yellow-400 transition-colors"
+            type="submit"
+          >
+            Masuk
+          </button>
+        </form>
+        <p class="text-center mt-8 text-sm">
+          <a
+            href="index.html"
+            class="text-slate-400 hover:text-yellow-400 transition-colors"
+            >&larr; Kembali ke halaman publik</a
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashView" class="hidden min-h-screen flex flex-col">
+      <header
+        class="glass sticky top-0 z-40 border-b border-white/5 rounded-none border-x-0 border-t-0"
+      >
+        <div
+          class="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4"
+        >
+          <div>
+            <h1 class="text-xl font-bold text-white">Dashboard Admin</h1>
+            <div class="text-xs text-yellow-400 mt-1" id="whoami"></div>
+          </div>
+          <div class="flex gap-3">
+            <a
+              class="px-4 py-2 text-sm rounded-lg border border-white/10 hover:bg-white/5 transition-colors"
+              href="index.html"
+              >Lihat Publik</a
+            >
+            <button
+              id="logoutBtn"
+              class="px-4 py-2 text-sm rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+            >
+              Keluar
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-grow p-6">
+        <div class="max-w-7xl mx-auto glass p-6 md:p-8 rounded-2xl shadow-xl">
+          <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <input
+                id="search"
+                type="search"
+                placeholder="Cari nama..."
+                class="input-field sm:w-64"
+              />
+              <select id="filter" class="input-field">
+                <option value="">Semua kesibukan</option>
+              </select>
+            </div>
+            <button
+              id="addBtn"
+              class="px-5 py-2.5 rounded-lg bg-yellow-500 text-slate-900 font-bold hover:bg-yellow-400 transition-colors whitespace-nowrap"
+            >
+              + Tambah Data
+            </button>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-white/5">
+            <table class="w-full text-sm text-left whitespace-nowrap">
+              <thead
+                class="text-xs uppercase bg-slate-800/80 text-slate-400 border-b border-white/10"
+              >
+                <tr>
+                  <th class="px-6 py-4 font-semibold tracking-wider">Nama</th>
+                  <th class="px-6 py-4 font-semibold tracking-wider">
+                    Kesibukan
+                  </th>
+                  <th class="px-6 py-4 font-semibold tracking-wider">Alamat</th>
+                  <th class="px-6 py-4 font-semibold tracking-wider">No HP</th>
+                  <th class="px-6 py-4 font-semibold tracking-wider">
+                    Keterangan
+                  </th>
+                  <th class="px-6 py-4 font-semibold tracking-wider text-right">
+                    Aksi
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="tbody" class="divide-y divide-white/5"></tbody>
+            </table>
+          </div>
+
+          <div
+            class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-slate-400"
+          >
+            <span id="info"></span>
+            <div
+              class="pagination flex gap-2 items-center"
+              id="pagination"
+            ></div>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- FORM TAMBAH / EDIT -->
+    <dialog id="formDlg" class="w-full max-w-lg p-0 m-auto">
+      <div
+        class="glass p-8 rounded-2xl shadow-2xl border border-white/10 text-left bg-slate-900 w-full"
+      >
+        <h1 id="dlgTitle" class="text-xl font-bold text-white mb-6">
+          Tambah Data
+        </h1>
+        <form id="dataForm" method="dialog">
+          <input type="hidden" id="f_id" />
+
+          <label for="f_nama" class="label-field mt-0">Nama *</label>
+          <input id="f_nama" required class="input-field" />
+
+          <label for="f_kesibukan" class="label-field">Kesibukan</label>
+          <input
+            id="f_kesibukan"
+            placeholder="mis. Petani, Guru, Pedagang"
+            class="input-field"
+          />
+
+          <label for="f_alamat" class="label-field">Alamat</label>
+          <textarea id="f_alamat" rows="2" class="input-field"></textarea>
+
+          <label for="f_no_hp" class="label-field">No HP</label>
+          <input id="f_no_hp" type="tel" class="input-field" />
+
+          <label for="f_keterangan" class="label-field">Keterangan</label>
+          <textarea id="f_keterangan" rows="2" class="input-field"></textarea>
+
+          <div
+            class="text-red-400 text-sm mt-3 min-h-[20px]"
+            id="formError"
+          ></div>
+
+          <div class="flex justify-end gap-3 mt-8">
+            <button
+              type="button"
+              id="cancelBtn"
+              class="px-5 py-2.5 rounded-lg border border-white/10 hover:bg-white/5 transition-colors"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="saveBtn"
+              class="px-5 py-2.5 rounded-lg bg-yellow-500 text-slate-900 font-bold hover:bg-yellow-400 transition-colors"
+            >
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>
